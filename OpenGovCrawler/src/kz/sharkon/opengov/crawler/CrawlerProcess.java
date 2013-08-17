@@ -1,43 +1,48 @@
-package kz.sharkon.opengov.crawler.controller;
+package kz.sharkon.opengov.crawler;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import kz.sharkon.opengov.crawler.controller.CrawlerController;
+import kz.sharkon.opengov.crawler.model.Webpage;
+import kz.sharkon.opengov.crawler.model.controller.DataController;
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
-import kz.sharkon.opengov.crawler.Crawler;
-import kz.sharkon.opengov.crawler.CrawlerProcess;
-import kz.sharkon.opengov.crawler.model.Webpage;
-import kz.sharkon.opengov.crawler.model.controller.DataController;
 
-public class CrawlerController {
+public class CrawlerProcess /*implements Runnable*/{
+	
+	private static Logger logger = Logger.getLogger(CrawlerProcess.class);
+	
 
-	private static Logger logger = Logger.getLogger(CrawlerController.class);
-	static CrawlerProcess process;
-
+	private String directory = "/home/masaniy/tmp";
+	
+	public CrawlerProcess(String directory) {
+		super();
+		this.directory = directory;
+		// TODO Auto-generated constructor stub
+	}
+	
+	public CrawlerProcess() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	/**
+	 * @param args
+	 */
+/*
 	public static void main(String[] args) {
+*/
+	/*@Override*/
+	public void run() {
 		// TODO Auto-generated method stub
-		String directory = "/tmp";
-		if(args!=null && args.length>0){
-			if(args[0].equals("-d")){
-				directory = args[1];
-			}
-		}
-		/*if(directory==null){
-			process = new CrawlerProcess();
-		}else{
-			process = new CrawlerProcess(directory);
-		}
-		process.run();*/
-		
 		DataController dataController = new DataController();
 		List<Webpage> webPages = dataController.getNotVisitedPages();
 		
-		int numberOfCrawlers = webPages.size();
+		int numberOfCrawlers = 1;//webPages.size();
 
 		CrawlConfig config = new CrawlConfig();
 		logger.info("Директория для индексации:"+directory);
@@ -58,7 +63,7 @@ public class CrawlerController {
 					robotstxtServer);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			logger.error("CrawlController error", e);
+			e.printStackTrace();
 		}
 
 		/*
@@ -66,20 +71,27 @@ public class CrawlerController {
 		 * URLs that are fetched and then the crawler starts following links
 		 * which are found in these pages
 		 */
-		for (Webpage webPage : webPages) {
+		/*for (Webpage webPage : webPages) {
 			controller.addSeed(webPage.getUrl());
-		}
+		}*/
+		controller.addSeed(webPages.get(0).getUrl());
 		/*
 		 * Start the crawl. This is a blocking operation, meaning that your code
 		 * will reach the line after this only when crawling is finished.
 		 */
 		controller.start(Crawler.class, numberOfCrawlers);
+}
 
-		/*Thread thread = new Thread(process);
-		//thread.setDaemon(true);
-		thread.start();*/
-
-		logger.info("Индексация завершена");
-	}
+	/*@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Привет из побочного потока!");
+	}*/
 
 }

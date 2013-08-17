@@ -110,8 +110,10 @@ public class Crawler extends WebCrawler {
 		String url = page.getWebURL().getURL();
 		DataController dataController = new DataController();
 		Webpage webpage = dataController.getWebpageByURL(url);
-		webpage.setVisited(1);
-		dataController.setWebpage(webpage);
+		if(webpage!=null){
+			webpage.setVisited(1);		
+			dataController.setWebpage(webpage);
+		}
 		// if (page.getParseData() instanceof HtmlParseData) {
 		// HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 		// String text = htmlParseData.getText();
